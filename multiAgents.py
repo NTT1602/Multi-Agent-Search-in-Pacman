@@ -135,28 +135,68 @@ class MinimaxAgent(MultiAgentSearchAgent):
         """
         Returns the minimax action from the current gameState using self.depth
         and self.evaluationFunction.
-
-        Here are some method calls that might be useful when implementing minimax.
-
-        gameState.getLegalActions(agentIndex):
-        Returns a list of legal actions for an agent
-        agentIndex=0 means Pacman, ghosts are >= 1
-
-        gameState.generateSuccessor(agentIndex, action):
-        Returns the successor game state after an agent takes an action
-
-        gameState.getNumAgents():
-        Returns the total number of agents in the game
-
-        gameState.isWin():
-        Returns whether or not the game state is a winning state
-
-        gameState.isLose():
-        Returns whether or not the game state is a losing state
         """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
 
+       
+        def value(state, depth, agentIndex):
+
+            if depth == self.depth or state.isWin() or state.isLose():
+                return self.evaluationFunction(state), ""
+
+          
+            if agentIndex == 0:
+                return maxValue(state, depth)
+            
+            
+            else:
+                return minValue(state, depth, agentIndex)
+
+
+        
+        def maxValue(state, depth):
+            v = float("-inf") 
+            bestAction = ""
+            actions = state.getLegalActions(0) 
+            
+            for action in actions:
+                
+                successor = state.generateSuccessor(0, action)
+                newV, _ = value(successor, depth, 1)
+                if newV > v:
+                    v, bestAction = newV, action
+                    
+            return v, bestAction
+
+
+        
+        def minValue(state, depth, agentIndex):
+            v = float("inf")
+            bestAction = ""
+            actions = state.getLegalActions(agentIndex) 
+            numAgents = state.getNumAgents() 
+            
+            for action in actions:
+                
+                successor = state.generateSuccessor(agentIndex, action)
+                
+                
+                if agentIndex == numAgents - 1:
+                    
+                    newV, _ = value(successor, depth + 1, 0)
+                else:
+                   
+                    newV, _ = value(successor, depth, agentIndex + 1)
+                
+                
+                if newV < v:
+                    v, bestAction = newV, action
+                    
+            return v, bestAction
+        
+        _, action = value(gameState, 0, 0)
+        
+        return action
+    
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
     Your minimax agent with alpha-beta pruning (question 3)
