@@ -76,12 +76,18 @@ class ReflexAgent(Agent):
 
         "*** YOUR CODE HERE ***"
         score = successorGameState.getScore()
+
         for ghostState in newGhostStates:
             ghostPos = ghostState.getPosition()
             distToGhost = manhattanDistance(newPos, ghostPos)
             
-            if ghostState.scaredTimer == 0 and distToGhost <= 1:
-                return -float('inf')
+            if ghostState.scaredTimer == 0:
+                if distToGhost <= 1:
+                    return -float('inf')
+            else:
+                if distToGhost > 0:
+                    score += 10.0 / distToGhost
+
 
         foodList = newFood.asList()
         if len(foodList) > 0:
