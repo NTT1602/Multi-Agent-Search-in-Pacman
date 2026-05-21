@@ -377,20 +377,20 @@ def betterEvaluationFunction(currentGameState: GameState):
         capsuleDist = min(manhattanDistance(pos, capsulePos) for capsulePos in capsules)
         
         if any([ghostState.scaredTimer == 0 for ghostState in ghostStates]):
-            score += 10.0 / capsuleDist
-        score += 5.0 * len(capsules)
+            score += 20.0 / capsuleDist
+        score -= 30.0 * len(capsules)
 
     for i, ghostState in enumerate(ghostStates):
         ghostPos = ghostState.getPosition()
         ghostDist = manhattanDistance(pos, ghostPos)
 
         if scaredTimes[i] > 0:
-            score += 200.0 / (ghostDist + 1)
+            score += 100.0 / ghostDist 
         else:
             if ghostDist < 2:
                 score -= 500.0 
             else:
-                score -= 10.0 / ghostDist
+                score -= 15.0 / ghostDist
     
     if currentGameState.isWin():
         score += 5000.0
